@@ -1,0 +1,10 @@
+*.o
+*.so
+xovi.c
+xovi.h
+qrc_*
+moc_*
+Makefile
+.qmake.stash
+build/
+venv/
