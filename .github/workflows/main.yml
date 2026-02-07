@@ -54,7 +54,7 @@ jobs:
             path: ./
 
         - name: Create Release
-          uses: softprops/action-gh-release
+          uses: actions/create-release@v1
           id: create_release_step
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
