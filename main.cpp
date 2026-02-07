@@ -3,5 +3,5 @@
 
 extern "C" void registerQmldiff() {
 	qmlRegisterSingletonInstance<StickerManager>(
-			"dk.ingatellent.stickers", 1, 0, "StickerManager", new StickerManager());
+			"dk.ingatellent.stickers", 0, 1, "StickerManager", new StickerManager());
 }
