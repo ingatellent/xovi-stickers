@@ -1,5 +1,5 @@
 AFFECT [[3197972396468700595]]
-IMPORT dk.ingatellent.stickers [[180922.180921]]
+IMPORT dk.ingatellent.stickers 0.1
 TRAVERSE ?#[[214642769434]]
 LOCATE AFTER ALL
 INSERT {
