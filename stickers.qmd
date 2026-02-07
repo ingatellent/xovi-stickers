@@ -1,6 +1,6 @@
 AFFECT [[11313888899523275277]]
     IMPORT [[7082546018834]] [[180922.180921]]
-    IMPORT dk.ingatellent.stickers 0.1
+    IMPORT dk.ingatellent.stickers [[180922.180921]]
     IMPORT Qt.labs.folderlistmodel [[180923.180930]]
     TRAVERSE [[8397993708429497603]] > [[6502786168]]#[[233745975898428]] > [[8398044571386570029]]
         LOCATE AFTER [[7712155293725601]][.[[214634455770]]=`toolbarProvider.editingTools`]
@@ -36,8 +36,8 @@ AFFECT [[11313888899523275277]]
                     ~&11179472971324505115&~.~&1530850700149128507&~();
                 }
 
-                function formatIndex(~&180983&~) {
-                    ~&7083121450889&~ ~&180983&~ < 10 ? (~&"180921&~ + ~&180983&~) : ~&180983&~
+                function formatIndex(n) {
+                    ~&7083121450889&~ n < 10 ? (~&"180921&~ + n) : n
                 }
 
                 function nextStickerIndex() {
@@ -111,7 +111,7 @@ AFFECT [[11313888899523275277]]
                                         ~&6504254477&~.~&233718999756776&~(stickersButton)
                                         ~&6504254477&~.~&3352491319205423503&~()
 
-                                        ~&254480318283987577&~.~&214629893131&~ = StickerManager.loadSceneItems(~&254539508423767444&~.filePath.~&233743002793445&~(~&"233727656679905&~,""))
+                                        ~&254480318283987577&~.~&214629893131&~ = StickerManager.loadSceneItems(~&254539508423767444&~.filePath.replace(~&"233727656679905&~,""))
                                     }
 
                                     ~&383135108587212173&~: (~&197096443&~) => {
@@ -237,8 +237,8 @@ AFFECT [[11313888899523275277]]
                                     stickersButton.ensureVtablePtr();
                                     ~&197102514&~ dir = "/home/root/stickers/";
                                     StickerManager.ensureDirectory(dir);
-                                    ~&197102514&~ ~&180983&~ = stickersButton.nextStickerIndex();
-                                    ~&197102514&~ ~&180985&~ = dir + ~&"7082553357604&~ + stickersButton.formatIndex(~&180983&~) + ".json";
+                                    ~&197102514&~ n = stickersButton.nextStickerIndex();
+                                    ~&197102514&~ ~&180985&~ = dir + ~&"7082553357604&~ + stickersButton.formatIndex(n) + ".json";
                                     StickerManager.saveSceneItems(~&254480318283987577&~.~&214629893131&~, ~&180985&~);
                                     ~&5972376&~ (stickerModel.~&214622615378&~ < 1) {
                                         stickerModel.~&7082663378949&~ = "";
