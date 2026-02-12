@@ -260,7 +260,7 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
     return info;
 }
 
-void StickerManager::saveSceneItemsSvg(
+void StickerManager::saveSceneItemsAsSvg(
     const QList<std::shared_ptr<SceneItem>>& items,
     const QString& filename,
     QSizeF canvasSize)
