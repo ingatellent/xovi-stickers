@@ -334,68 +334,81 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
 
 void StickerManager::saveSceneItemsAsSvg(
     const QList<std::shared_ptr<SceneItem>>& items,
-    const QString& filename,
-    QSizeF canvasSize)
+    const QString& filename)
 {
-    QString svg;
+    if (items.isEmpty()) return;
 
-    svg += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    svg += QString(
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" "
-        "width=\"%1\" height=\"%2\" "
-        "viewBox=\"0 0 %1 %2\">\n")
-        .arg(canvasSize.width())
-        .arg(canvasSize.height());
+    QRectF boundingBox;
+    bool first = true;
+    for (const auto& itemPtr : items) {
+        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        if (!lineItem) continue;
+
+        if (first) {
+            boundingBox = lineItem->line.bounds;
+            first = false;
+        } else {
+            boundingBox = boundingBox.united(lineItem->line.bounds);
+        }
+    }
+
+    double offsetX = boundingBox.left();
+    double offsetY = boundingBox.top();
+    double width = boundingBox.width();
+    double height = boundingBox.height();
+
+    QString svg;
+    svg += QString("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%1\" height=\"%2\" viewBox=\"0 0 %1 %2\">\n")
+            .arg(width).arg(height);
 
     for (const auto& itemPtr : items) {
         auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
         if (!lineItem) continue;
 
         const Line& line = lineItem->line;
-        if (line.points.isEmpty()) continue;
 
-        // --- Build path string ---
-        QString path = "M ";
-        path += QString("%1 %2")
-                    .arg(line.points[0].x)
-                    .arg(line.points[0].y);
-
-        for (int i = 1; i < line.points.size(); ++i) {
-            const auto& pt = line.points[i];
-            path += QString(" L %1 %2")
-                        .arg(pt.x)
-                        .arg(pt.y);
+        // Map color code to actual RGBA
+        Color c;
+        if (line.color == 9) {  // ARGB mode
+            c = Color((line.rgba >> 16) & 0xFF, (line.rgba >> 8) & 0xFF, line.rgba & 0xFF, (line.rgba >> 24) & 0xFF);
+        } else {
+            c = getColorFromPalette(static_cast<PenColor>(line.color));
         }
 
-        QString color = svgColorFromRgba(line.rgba, line.color);
-        double opacity = svgOpacityFromRgba(line.rgba, line.color);
+        QString strokeColor = QString("rgb(%1,%2,%3)").arg(c.r).arg(c.g).arg(c.b);
+        double strokeOpacity = c.a / 255.0;
 
-        // choose thickness source
-        double width = line.thickness;
-        if (width <= 0 && !line.points.isEmpty())
-            width = line.points.first().width;
+        // Build path
+        QString pathData;
+        bool firstPoint = true;
+        for (const auto& pt : line.points) {
+            double x = pt.x - offsetX;
+            double y = pt.y - offsetY;
 
-        svg += QString(
-            "<path d=\"%1\" "
-            "fill=\"none\" "
-            "stroke=\"%2\" "
-            "stroke-opacity=\"%3\" "
-            "stroke-width=\"%4\" "
-            "stroke-linecap=\"round\" "
-            "stroke-linejoin=\"round\" />\n")
-            .arg(path)
-            .arg(color)
-            .arg(opacity, 0, 'f', 3)
-            .arg(width);
+            if (firstPoint) {
+                pathData += QString("M %1 %2 ").arg(x).arg(y);
+                firstPoint = false;
+            } else {
+                pathData += QString("L %1 %2 ").arg(x).arg(y);
+            }
+        }
+
+        svg += QString("<path d=\"%1\" fill=\"none\" stroke=\"%2\" stroke-width=\"%3\" stroke-opacity=\"%4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" />\n")
+                .arg(pathData)
+                .arg(strokeColor)
+                .arg(line.thickness)
+                .arg(strokeOpacity, 0, 'f', 2);
     }
 
     svg += "</svg>\n";
 
     QFile file(filename);
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if (file.open(QIODevice::WriteOnly)) {
         file.write(svg.toUtf8());
         file.close();
     }
+}
+
 }
 
 
