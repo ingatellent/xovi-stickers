@@ -101,7 +101,6 @@ void StickerManager::saveSceneItems(const QList<std::shared_ptr<SceneItem>>& ite
 
     saveSceneItemsAsSvg(items, svgFilename);
 }
-}
 
 QList<std::shared_ptr<SceneItem>> StickerManager::loadSceneItems(const QString& filename) {
 	QList<std::shared_ptr<SceneItem>> items;
