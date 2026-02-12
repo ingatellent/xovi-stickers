@@ -1,5 +1,7 @@
 #include "StickerManager.hpp"
 
+#include <QColor>
+#include <QString>
 #include <QRandomGenerator>
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -93,6 +95,12 @@ void StickerManager::saveSceneItems(const QList<std::shared_ptr<SceneItem>>& ite
 		file.write(doc.toJson());
 		file.close();
 	}
+
+    QFileInfo fi(filename);
+    QString svgFilename = fi.path() + "/" + fi.completeBaseName() + ".svg";
+
+    saveSceneItemsAsSvg(items, svgFilename);
+}
 }
 
 QList<std::shared_ptr<SceneItem>> StickerManager::loadSceneItems(const QString& filename) {
@@ -251,4 +259,144 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
 
     return info;
 }
+
+void StickerManager::saveSceneItemsSvg(
+    const QList<std::shared_ptr<SceneItem>>& items,
+    const QString& filename,
+    QSizeF canvasSize)
+{
+    QString svg;
+
+    svg += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    svg += QString(
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" "
+        "width=\"%1\" height=\"%2\" "
+        "viewBox=\"0 0 %1 %2\">\n")
+        .arg(canvasSize.width())
+        .arg(canvasSize.height());
+
+    for (const auto& itemPtr : items) {
+        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        if (!lineItem) continue;
+
+        const Line& line = lineItem->line;
+        if (line.points.isEmpty()) continue;
+
+        // --- Build path string ---
+        QString path = "M ";
+        path += QString("%1 %2")
+                    .arg(line.points[0].x)
+                    .arg(line.points[0].y);
+
+        for (int i = 1; i < line.points.size(); ++i) {
+            const auto& pt = line.points[i];
+            path += QString(" L %1 %2")
+                        .arg(pt.x)
+                        .arg(pt.y);
+        }
+
+        QString color = svgColorFromRgba(line.rgba, line.color);
+        double opacity = svgOpacityFromRgba(line.rgba, line.color);
+
+        // choose thickness source
+        double width = line.thickness;
+        if (width <= 0 && !line.points.isEmpty())
+            width = line.points.first().width;
+
+        svg += QString(
+            "<path d=\"%1\" "
+            "fill=\"none\" "
+            "stroke=\"%2\" "
+            "stroke-opacity=\"%3\" "
+            "stroke-width=\"%4\" "
+            "stroke-linecap=\"round\" "
+            "stroke-linejoin=\"round\" />\n")
+            .arg(path)
+            .arg(color)
+            .arg(opacity, 0, 'f', 3)
+            .arg(width);
+    }
+
+    svg += "</svg>\n";
+
+    QFile file(filename);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        file.write(svg.toUtf8());
+        file.close();
+    }
+}
+
+
+enum PenColor {
+    BLACK = 0,
+    GRAY = 1,
+    WHITE = 2,
+    YELLOW = 3,
+    GREEN = 4,
+    PINK = 5,
+    BLUE = 6,
+    RED = 7,
+    GRAY_OVERLAP = 8,
+    ARGB = 9,
+    GREEN_2 = 10,
+    CYAN = 11,
+    MAGENTA = 12,
+    YELLOW_2 = 13
+};
+
+struct Color {
+    int r, g, b, a;
+    constexpr Color(int _r, int _g, int _b, int _a) : r(_r), g(_g), b(_b), a(_a) {}
+};
+
+constexpr Color getColorFromPalette(const PenColor penColor) {
+    switch (penColor) {
+        case BLACK: return Color(0, 0, 0, 255);
+        case GRAY: return Color(125, 125, 125, 255);
+        case WHITE: return Color(255, 255, 255, 255);
+        case YELLOW: return Color(255, 255, 99, 255);
+        case GREEN: return Color(0, 255, 0, 255);
+        case PINK: return Color(255, 20, 147, 255);
+        case BLUE: return Color(0, 98, 204, 255);
+        case RED: return Color(217, 7, 7, 255);
+        case GRAY_OVERLAP: return Color(125, 125, 125, 255);
+        case GREEN_2: return Color(145, 218, 113, 255);
+        case CYAN: return Color(116, 210, 232, 255);
+        case MAGENTA: return Color(192, 127, 210, 255);
+        case YELLOW_2: return Color(250, 231, 25, 255);
+        default: return Color(0, 0, 0, 255);
+    }
+}
+
+static QString svgColorFromRgba(quint32 rgba, int colorCode)
+{
+    if (colorCode == ARGB) {
+        // user-defined color
+        int r = (rgba >> 16) & 0xFF;
+        int g = (rgba >> 8) & 0xFF;
+        int b = rgba & 0xFF;
+        return QString("#%1%2%3")
+            .arg(r, 2, 16, QChar('0'))
+            .arg(g, 2, 16, QChar('0'))
+            .arg(b, 2, 16, QChar('0'));
+    }
+
+    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
+    return QString("#%1%2%3")
+        .arg(c.r, 2, 16, QChar('0'))
+        .arg(c.g, 2, 16, QChar('0'))
+        .arg(c.b, 2, 16, QChar('0'));
+}
+
+static double svgOpacityFromRgba(quint32 rgba, int colorCode)
+{
+    if (colorCode == ARGB) {
+        int a = (rgba >> 24) & 0xFF;
+        return a / 255.0;
+    }
+
+    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
+    return c.a / 255.0;
+}
+
 
