@@ -58,37 +58,6 @@ constexpr Color getColorFromPalette(const PenColor penColor) {
     }
 }
 
-static QString svgColorFromRgba(quint32 rgba, int colorCode)
-{
-    if (colorCode == ARGB) {
-        // user-defined color
-        int r = (rgba >> 16) & 0xFF;
-        int g = (rgba >> 8) & 0xFF;
-        int b = rgba & 0xFF;
-        return QString("#%1%2%3")
-            .arg(r, 2, 16, QChar('0'))
-            .arg(g, 2, 16, QChar('0'))
-            .arg(b, 2, 16, QChar('0'));
-    }
-
-    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
-    return QString("#%1%2%3")
-        .arg(c.r, 2, 16, QChar('0'))
-        .arg(c.g, 2, 16, QChar('0'))
-        .arg(c.b, 2, 16, QChar('0'));
-}
-
-static double svgOpacityFromRgba(quint32 rgba, int colorCode)
-{
-    if (colorCode == ARGB) {
-        int a = (rgba >> 24) & 0xFF;
-        return a / 255.0;
-    }
-
-    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
-    return c.a / 255.0;
-}
-
 
 struct Coordinate {
 	float x;
@@ -368,7 +337,7 @@ void StickerManager::saveSceneItemsAsSvg(
         const Line& line = lineItem->line;
 
         // Map color code to actual RGBA
-        Color c;
+        Color c(0,0,0,255);
         if (line.color == 9) {  // ARGB mode
             c = Color((line.rgba >> 16) & 0xFF, (line.rgba >> 8) & 0xFF, line.rgba & 0xFF, (line.rgba >> 24) & 0xFF);
         } else {
@@ -409,6 +378,6 @@ void StickerManager::saveSceneItemsAsSvg(
     }
 }
 
-}
+
 
 
