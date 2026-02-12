@@ -28,7 +28,6 @@ class StickerManager : public QObject
 
 		Q_INVOKABLE void ensureDirectory(const QString& path);
 		Q_INVOKABLE bool deleteFile(const QString& path);
-
-
+        Q_INVOKABLE QVariantMap getPenInfoOfFirstItem(const QList<std::shared_ptr<SceneItem>>& items)
 
 };

@@ -9,6 +9,7 @@
 #include <QUrl>
 #include <QPolygonF>
 #include <QTextStream>
+#include <QVariantMap>
 #include <cmath>
 
 #include "rm_SceneLineItem.hpp"
@@ -230,3 +231,24 @@ void StickerManager::ensureDirectory(const QString& path) {
 bool StickerManager::deleteFile(const QString& path) {
 	return QFile::remove(path);
 }
+
+
+Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
+        const QList<std::shared_ptr<SceneItem>>& items)
+{
+    QVariantMap info;
+    if (items.isEmpty()) return info;
+
+    auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
+    if (!lineItem) return info;
+
+    info["currentTool"] = static_cast<int>(lineItem->line.tool);
+    info["currentThickness"] = lineItem->line.points.isEmpty()
+                               ? 0
+                               : static_cast<int>(lineItem->line.points.first().width);
+    info["currentColorCode"] = static_cast<int>(lineItem->line.color);
+    info["currentRgb"] = static_cast<quint32>(lineItem->line.rgba);
+
+    return info;
+}
+
