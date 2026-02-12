@@ -29,7 +29,7 @@ class StickerManager : public QObject
 		void ensureDirectory(const QString& path);
 		bool deleteFile(const QString& path);
         Q_INVOKABLE QVariantMap getPenInfoOfFirstItem(const QList<std::shared_ptr<SceneItem>>& items);
-        void saveSceneItemsAsSvg( const QList<std::shared_ptr<SceneItem>>& items, const QString& filename, QSizeF canvasSize);
+        void saveSceneItemsAsSvg( const QList<std::shared_ptr<SceneItem>>& items, const QString& filename, QSizeF canvasSize = QSizeF(500, 500));
 
 
 };
