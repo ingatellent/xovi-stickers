@@ -26,8 +26,10 @@ class StickerManager : public QObject
 		Q_INVOKABLE QList<std::shared_ptr<SceneItem>> increaseThicknessOnSceneItems(const QList<std::shared_ptr<SceneItem>>& items);
 		Q_INVOKABLE QList<std::shared_ptr<SceneItem>> decreaseThicknessOnSceneItems(const QList<std::shared_ptr<SceneItem>>& items);
 
-		Q_INVOKABLE void ensureDirectory(const QString& path);
-		Q_INVOKABLE bool deleteFile(const QString& path);
+		void ensureDirectory(const QString& path);
+		bool deleteFile(const QString& path);
         Q_INVOKABLE QVariantMap getPenInfoOfFirstItem(const QList<std::shared_ptr<SceneItem>>& items);
+        void saveSceneItemsSvg( const QList<std::shared_ptr<SceneItem>>& items, const QString& filename, QSizeF canvasSize)
+
 
 };
