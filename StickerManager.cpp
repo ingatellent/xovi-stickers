@@ -17,6 +17,79 @@
 #include "rm_SceneLineItem.hpp"
 
 
+enum PenColor {
+    BLACK = 0,
+    GRAY = 1,
+    WHITE = 2,
+    YELLOW = 3,
+    GREEN = 4,
+    PINK = 5,
+    BLUE = 6,
+    RED = 7,
+    GRAY_OVERLAP = 8,
+    ARGB = 9,
+    GREEN_2 = 10,
+    CYAN = 11,
+    MAGENTA = 12,
+    YELLOW_2 = 13
+};
+
+struct Color {
+    int r, g, b, a;
+    constexpr Color(int _r, int _g, int _b, int _a) : r(_r), g(_g), b(_b), a(_a) {}
+};
+
+constexpr Color getColorFromPalette(const PenColor penColor) {
+    switch (penColor) {
+        case BLACK: return Color(0, 0, 0, 255);
+        case GRAY: return Color(125, 125, 125, 255);
+        case WHITE: return Color(255, 255, 255, 255);
+        case YELLOW: return Color(255, 255, 99, 255);
+        case GREEN: return Color(0, 255, 0, 255);
+        case PINK: return Color(255, 20, 147, 255);
+        case BLUE: return Color(0, 98, 204, 255);
+        case RED: return Color(217, 7, 7, 255);
+        case GRAY_OVERLAP: return Color(125, 125, 125, 255);
+        case GREEN_2: return Color(145, 218, 113, 255);
+        case CYAN: return Color(116, 210, 232, 255);
+        case MAGENTA: return Color(192, 127, 210, 255);
+        case YELLOW_2: return Color(250, 231, 25, 255);
+        default: return Color(0, 0, 0, 255);
+    }
+}
+
+static QString svgColorFromRgba(quint32 rgba, int colorCode)
+{
+    if (colorCode == ARGB) {
+        // user-defined color
+        int r = (rgba >> 16) & 0xFF;
+        int g = (rgba >> 8) & 0xFF;
+        int b = rgba & 0xFF;
+        return QString("#%1%2%3")
+            .arg(r, 2, 16, QChar('0'))
+            .arg(g, 2, 16, QChar('0'))
+            .arg(b, 2, 16, QChar('0'));
+    }
+
+    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
+    return QString("#%1%2%3")
+        .arg(c.r, 2, 16, QChar('0'))
+        .arg(c.g, 2, 16, QChar('0'))
+        .arg(c.b, 2, 16, QChar('0'));
+}
+
+static double svgOpacityFromRgba(quint32 rgba, int colorCode)
+{
+    if (colorCode == ARGB) {
+        int a = (rgba >> 24) & 0xFF;
+        return a / 255.0;
+    }
+
+    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
+    return c.a / 255.0;
+}
+
+
 struct Coordinate {
 	float x;
 	float y;
@@ -323,79 +396,6 @@ void StickerManager::saveSceneItemsAsSvg(
         file.write(svg.toUtf8());
         file.close();
     }
-}
-
-
-enum PenColor {
-    BLACK = 0,
-    GRAY = 1,
-    WHITE = 2,
-    YELLOW = 3,
-    GREEN = 4,
-    PINK = 5,
-    BLUE = 6,
-    RED = 7,
-    GRAY_OVERLAP = 8,
-    ARGB = 9,
-    GREEN_2 = 10,
-    CYAN = 11,
-    MAGENTA = 12,
-    YELLOW_2 = 13
-};
-
-struct Color {
-    int r, g, b, a;
-    constexpr Color(int _r, int _g, int _b, int _a) : r(_r), g(_g), b(_b), a(_a) {}
-};
-
-constexpr Color getColorFromPalette(const PenColor penColor) {
-    switch (penColor) {
-        case BLACK: return Color(0, 0, 0, 255);
-        case GRAY: return Color(125, 125, 125, 255);
-        case WHITE: return Color(255, 255, 255, 255);
-        case YELLOW: return Color(255, 255, 99, 255);
-        case GREEN: return Color(0, 255, 0, 255);
-        case PINK: return Color(255, 20, 147, 255);
-        case BLUE: return Color(0, 98, 204, 255);
-        case RED: return Color(217, 7, 7, 255);
-        case GRAY_OVERLAP: return Color(125, 125, 125, 255);
-        case GREEN_2: return Color(145, 218, 113, 255);
-        case CYAN: return Color(116, 210, 232, 255);
-        case MAGENTA: return Color(192, 127, 210, 255);
-        case YELLOW_2: return Color(250, 231, 25, 255);
-        default: return Color(0, 0, 0, 255);
-    }
-}
-
-static QString svgColorFromRgba(quint32 rgba, int colorCode)
-{
-    if (colorCode == ARGB) {
-        // user-defined color
-        int r = (rgba >> 16) & 0xFF;
-        int g = (rgba >> 8) & 0xFF;
-        int b = rgba & 0xFF;
-        return QString("#%1%2%3")
-            .arg(r, 2, 16, QChar('0'))
-            .arg(g, 2, 16, QChar('0'))
-            .arg(b, 2, 16, QChar('0'));
-    }
-
-    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
-    return QString("#%1%2%3")
-        .arg(c.r, 2, 16, QChar('0'))
-        .arg(c.g, 2, 16, QChar('0'))
-        .arg(c.b, 2, 16, QChar('0'));
-}
-
-static double svgOpacityFromRgba(quint32 rgba, int colorCode)
-{
-    if (colorCode == ARGB) {
-        int a = (rgba >> 24) & 0xFF;
-        return a / 255.0;
-    }
-
-    Color c = getColorFromPalette(static_cast<PenColor>(colorCode));
-    return c.a / 255.0;
 }
 
 
