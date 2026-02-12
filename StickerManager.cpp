@@ -365,7 +365,7 @@ void StickerManager::saveSceneItemsAsSvg(
         svg += QString("<path d=\"%1\" fill=\"none\" stroke=\"%2\" stroke-width=\"%3\" stroke-opacity=\"%4\" stroke-linecap=\"round\" stroke-linejoin=\"round\" />\n")
                 .arg(pathData)
                 .arg(strokeColor)
-                .arg(line.thickness)
+                .arg(line.points.first().width)
                 .arg(strokeOpacity, 0, 'f', 2);
     }
 
