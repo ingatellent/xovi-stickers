@@ -382,10 +382,10 @@ property ~&6503679477&~ initialized: ~&214625660372&~
         ~&7083121289162&~: ~&214625660372&~
         ~&495358363329399331&~: {
             ~&5972376&~ (!initialized) {
-                initialized = ~&6504329801&~
-
-                ~{changeColorDefinitionsSlot}~
+   
+				~{changeColorDefinitionsSlot}~
                 
+				initialized = ~&6504329801&~             
             }
         }
     }
