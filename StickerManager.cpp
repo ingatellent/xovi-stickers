@@ -288,7 +288,7 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
     QVariantMap info;
     if (items.isEmpty()) return info;
 
-    auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
+    auto* lineItem = dynamic_cast<SceneLineItem*>(items.first().get());
     if (!lineItem) return info;
 
     info["currentTool"] = static_cast<int>(lineItem->line.tool);
