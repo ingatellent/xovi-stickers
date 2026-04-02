@@ -294,7 +294,7 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
     auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
     if (!lineItem) return info;
 	void* vtable = lineItem->vtable;
-	printf("runtime vtable: %p\n", vtable;
+	printf("runtime vtable: %p\n", vtable);
 	printf("stored vtable : %p\n", SceneLineItem::vtable_ptr);
 	
 	if (vtable != SceneLineItem::vtable_ptr) return info;
