@@ -288,6 +288,9 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
     QVariantMap info;
     if (items.isEmpty()) return info;
 
+	void* vtable = *(void**)items.first().get();
+	if (vtable != SceneLineItem::vtable_ptr) return info;
+	
     auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
     if (!lineItem) return info;
 
