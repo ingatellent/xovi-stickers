@@ -111,6 +111,7 @@ void StickerManager::saveSceneItems(const QList<std::shared_ptr<SceneItem>>& ite
 	for (const auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
 		const Line& line = lineItem->line;
 		QJsonArray pointsArray;
@@ -196,6 +197,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setColorOnSceneIte
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.color = colorEnum;
@@ -212,6 +214,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setToolOnSceneItem
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.tool = toolEnum;
@@ -227,6 +230,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::increaseThicknessO
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -244,6 +248,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::decreaseThicknessO
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -287,15 +292,11 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
 {
     QVariantMap info;
     if (items.isEmpty()) return info;
-
-	
 	
 	
     auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
     if (!lineItem) return info;
 	void* vtable = lineItem->vtable;
-	printf("runtime vtable: %p\n", vtable);
-	printf("stored vtable : %p\n", SceneLineItem::vtable_ptr);
 	
 	if (vtable != SceneLineItem::vtable_ptr) return info;
 	
@@ -320,6 +321,7 @@ void StickerManager::saveSceneItemsAsSvg(
     for (const auto& itemPtr : items) {
         auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
         if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
         if (first) {
             boundingBox = lineItem->line.bounds;
