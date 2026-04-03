@@ -256,7 +256,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::decreaseThicknessO
 Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setThicknessOnSceneItems(
         const QList<std::shared_ptr<SceneItem>>& items, const quint32 thickness)
 {
-    return transformSceneItems(items, [](SceneLineItem& item) {
+    return transformSceneItems(items, [=](SceneLineItem& item) {
             for (auto& pt : item.line.points) {
             pt.width = thickness;
             }
