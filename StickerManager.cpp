@@ -278,6 +278,10 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setThicknessOnScen
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
+        if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+            resized.push_back(itemPtr);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -305,20 +309,21 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
     QVariantMap info;
     if (items.isEmpty()) return info;
 	
-	
-    auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
-    if (!lineItem) return info;
-	void* vtable = lineItem->vtable;
-	
-	if (vtable != SceneLineItem::vtable_ptr) return info;
-	
-    info["currentTool"] = static_cast<int>(lineItem->line.tool);
-    info["currentThickness"] = lineItem->line.points.isEmpty()
-                               ? 0
-                               : static_cast<int>(lineItem->line.points.first().width);
-    info["currentColorCode"] = static_cast<int>(lineItem->line.color);
-    info["currentRgb"] = static_cast<quint32>(lineItem->line.rgba);
+    for (auto& itemPtr : items) {
+        
+        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        if (!lineItem) continue;
+        if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
+        
+        info["currentTool"] = static_cast<int>(lineItem->line.tool);
+        info["currentThickness"] = lineItem->line.points.isEmpty()
+                                   ? 0
+                                   : static_cast<int>(lineItem->line.points.first().width);
+        info["currentColorCode"] = static_cast<int>(lineItem->line.color);
+        info["currentRgb"] = static_cast<quint32>(lineItem->line.rgba);
 
+        return info;
+    }
     return info;
 }
 
