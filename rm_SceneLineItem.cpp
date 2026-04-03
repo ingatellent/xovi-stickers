@@ -69,13 +69,6 @@ SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
     // Consider doing this check if vtable_ptr != nullptr
     // if(lineItem->vtable != SceneLineItem::vtable_ptr) return nullptr;
 
-    const unsigned int* raw = reinterpret_cast<const unsigned int*>(item->vtable);
-    for (uint8_t i = 0; i < (sizeof(SceneLineItem) / 4); ++i) {
-        if (i < 12 || i >= 30) {
-            printf("\t%02X: %08X\n", i * 4, raw[i]);
-        }
-    }
-
     return lineItem;
 }
 
