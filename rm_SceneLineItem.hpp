@@ -35,6 +35,8 @@ struct SceneLineItem : public SceneItem {
         return item;
     }
 
+    static SceneLineItem* tryCast(SceneItem* item);
+
     static void log(const SceneLineItem& item);
 };
 #ifdef __arm__

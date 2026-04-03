@@ -47,3 +47,24 @@ void SceneLineItem::log(const SceneLineItem& item) {
 		}
 	}
 }
+
+SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
+    if (!item) return nullptr;
+
+    auto* lineItem = reinterpret_cast<SceneLineItem*>(item);
+
+    if (lineItem->unk_xc != 0) return nullptr;
+    if (lineItem->unk_xe != 0) return nullptr;
+    if (lineItem->unk_x78 != 1) return nullptr;
+
+
+    if (!(lineItem->unk_x20 == 0x0 || (lineItem->unk_x20 == 0x2 && lineItem->unk_x21 == 0x2))) return nullptr;
+    
+
+    // We could also check for correct vtable, but it would break until vtable is set
+    // Consider doing this check if vtable_ptr != nullptr
+    // if(lineItem->vtable != SceneLineItem::vtable_ptr) return nullptr;
+
+    return lineItem;
+}
+

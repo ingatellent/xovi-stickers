@@ -109,7 +109,7 @@ void StickerManager::saveSceneItems(const QList<std::shared_ptr<SceneItem>>& ite
 	QJsonArray jsonArray;
 
 	for (const auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
 		if (!lineItem) continue;
 
 		const Line& line = lineItem->line;
@@ -194,8 +194,11 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setColorOnSceneIte
 {
 	QList<std::shared_ptr<SceneItem>> reColored;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
+            reColored.push_back(itemPtr);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.color = colorEnum;
@@ -210,8 +213,11 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setToolOnSceneItem
 {
 	QList<std::shared_ptr<SceneItem>> retooled;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
+            retooled.push_back(itemPtr);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.tool = toolEnum;
@@ -225,8 +231,11 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::increaseThicknessO
 {
 	QList<std::shared_ptr<SceneItem>> resized;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
+            resized.push_back(itemPtr);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -242,8 +251,11 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::decreaseThicknessO
 {
 	QList<std::shared_ptr<SceneItem>> resized;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
+            resized.push_back(itemPtr);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -259,8 +271,11 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setThicknessOnScen
 {
 	QList<std::shared_ptr<SceneItem>> resized;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
+            resized.push_back(itemPtr);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -287,17 +302,21 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
 {
     QVariantMap info;
     if (items.isEmpty()) return info;
+	
+    for (auto& itemPtr : items) {
+        
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+        if (!lineItem) continue;
+        
+        info["currentTool"] = static_cast<int>(lineItem->line.tool);
+        info["currentThickness"] = lineItem->line.points.isEmpty()
+                                   ? 0
+                                   : static_cast<int>(lineItem->line.points.first().width);
+        info["currentColorCode"] = static_cast<int>(lineItem->line.color);
+        info["currentRgb"] = static_cast<quint32>(lineItem->line.rgba);
 
-    auto* lineItem = reinterpret_cast<SceneLineItem*>(items.first().get());
-    if (!lineItem) return info;
-
-    info["currentTool"] = static_cast<int>(lineItem->line.tool);
-    info["currentThickness"] = lineItem->line.points.isEmpty()
-                               ? 0
-                               : static_cast<int>(lineItem->line.points.first().width);
-    info["currentColorCode"] = static_cast<int>(lineItem->line.color);
-    info["currentRgb"] = static_cast<quint32>(lineItem->line.rgba);
-
+        return info;
+    }
     return info;
 }
 
@@ -310,7 +329,7 @@ void StickerManager::saveSceneItemsAsSvg(
     QRectF boundingBox;
     bool first = true;
     for (const auto& itemPtr : items) {
-        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
         if (!lineItem) continue;
 
         if (first) {
@@ -331,7 +350,7 @@ void StickerManager::saveSceneItemsAsSvg(
             .arg(width).arg(height);
 
     for (const auto& itemPtr : items) {
-        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
         if (!lineItem) continue;
 
         const Line& line = lineItem->line;
