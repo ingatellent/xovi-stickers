@@ -54,8 +54,6 @@ SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
     printf("Items were not null");
 
     auto* lineItem = reinterpret_cast<SceneLineItem*>(item);
-    printf("item ptr = %p\n", item);
-    printf("lineItem ptr = %p\n", lineItem);
 
     printf("%d",lineItem->unk_xc);
     printf("%d",lineItem->unk_xe);
