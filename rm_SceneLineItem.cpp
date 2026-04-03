@@ -57,13 +57,13 @@ SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
     if (lineItem->unk_xe != 1) return nullptr;
     if (lineItem->unk_x78 != 1) return nullptr;
 
-    if (!(item.unk_x20 == 0x0 || (item.unk_x20 == 0x2 && item.unk_x21 == 0x2))) return nullptr;
+    if (!(lineItem->unk_x20 == 0x0 || (lineItem->unk_x20 == 0x2 && lineItem->unk_x21 == 0x2))) return nullptr;
 
     // We could also check for correct vtable, but it would break until vtable is set
     // Consider doing this check if vtable_ptr != nullptr
     // if(lineItem->vtable != SceneLineItem::vtable_ptr) return nullptr;
 
-    const unsigned int* raw = reinterpret_cast<const unsigned int*>(item.vtable);
+    const unsigned int* raw = reinterpret_cast<const unsigned int*>(item->vtable);
     for (uint8_t i = 0; i < (sizeof(SceneLineItem) / 4); ++i) {
         if (i < 12 || i >= 30) {
             printf("\t%02X: %08X\n", i * 4, raw[i]);
