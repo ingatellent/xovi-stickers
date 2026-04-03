@@ -109,9 +109,8 @@ void StickerManager::saveSceneItems(const QList<std::shared_ptr<SceneItem>>& ite
 	QJsonArray jsonArray;
 
 	for (const auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
 		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
 		const Line& line = lineItem->line;
 		QJsonArray pointsArray;
@@ -214,9 +213,8 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setToolOnSceneItem
 {
 	QList<std::shared_ptr<SceneItem>> retooled;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
             retooled.push_back(itemPtr);
             continue;
         }
@@ -233,9 +231,8 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::increaseThicknessO
 {
 	QList<std::shared_ptr<SceneItem>> resized;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
             resized.push_back(itemPtr);
             continue;
         }
@@ -254,9 +251,8 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::decreaseThicknessO
 {
 	QList<std::shared_ptr<SceneItem>> resized;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
             resized.push_back(itemPtr);
             continue;
         }
@@ -275,9 +271,8 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setThicknessOnScen
 {
 	QList<std::shared_ptr<SceneItem>> resized;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
-        if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+		auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
             resized.push_back(itemPtr);
             continue;
         }
@@ -310,9 +305,8 @@ Q_INVOKABLE QVariantMap StickerManager::getPenInfoOfFirstItem(
 	
     for (auto& itemPtr : items) {
         
-        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
         if (!lineItem) continue;
-        if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
         
         info["currentTool"] = static_cast<int>(lineItem->line.tool);
         info["currentThickness"] = lineItem->line.points.isEmpty()
@@ -335,9 +329,8 @@ void StickerManager::saveSceneItemsAsSvg(
     QRectF boundingBox;
     bool first = true;
     for (const auto& itemPtr : items) {
-        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
         if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
         if (first) {
             boundingBox = lineItem->line.bounds;
@@ -357,9 +350,8 @@ void StickerManager::saveSceneItemsAsSvg(
             .arg(width).arg(height);
 
     for (const auto& itemPtr : items) {
-        auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
         if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
         const Line& line = lineItem->line;
 
