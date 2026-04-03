@@ -35,21 +35,7 @@ struct SceneLineItem : public SceneItem {
         return item;
     }
 
-    SceneLineItem* SceneLineItem::tryCast(SceneItem* item)
-    {
-        if (!item) return nullptr;
-
-        auto* lineItem = reinterpret_cast<SceneLineItem*>(item);
-
-        if (lineItem->unk_xc != 0) return nullptr;
-        if (lineItem->unk_xe != 1) return nullptr;
-        if (lineItem->unk_x78 != 1) return nullptr;
-
-        if (!(lineItem->unk_x20 == 0 || lineItem->unk_x20 == 2)) return nullptr;
-        if (!(lineItem->unk_x21 == 0 || lineItem->unk_x21 == 2)) return nullptr;
-
-        return lineItem;
-    }
+    static SceneLineItem* tryCast(SceneItem* item)
 
     static void log(const SceneLineItem& item);
 };
