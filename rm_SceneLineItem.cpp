@@ -59,7 +59,7 @@ SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
 
     printf("%d",lineItem->unk_xc);
     printf("%d",lineItem->unk_xe);
-    printf("%d",lineItem->unk_x76);
+    printf("%d",lineItem->unk_x78);
     if (lineItem->unk_xc != 0) return nullptr;
     if (lineItem->unk_xe != 1) return nullptr;
     if (lineItem->unk_x78 != 1) return nullptr;
