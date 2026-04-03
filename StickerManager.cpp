@@ -92,7 +92,7 @@ inline void generateCircle(float radius, Coordinate center, LinePoint* destinati
 			static_cast<float>(center.y + radius * sin(angle)),
 			25, 25, 0, 255
 		};
-	}   
+        }   
 }   
 
 Line StickerManager::createCircle(const QPointF& _center, float radius) {
@@ -130,6 +130,8 @@ void StickerManager::saveSceneItems(const QList<std::shared_ptr<SceneItem>>& ite
 		obj["thickness"] = line.thickness;
 		jsonArray.append(obj);
 	}
+
+    if (jsonArray.isEmpty()) return;
 
 	QJsonDocument doc(jsonArray);
 	QFile file(filename);
@@ -396,7 +398,3 @@ void StickerManager::saveSceneItemsAsSvg(
         file.close();
     }
 }
-
-
-
-
