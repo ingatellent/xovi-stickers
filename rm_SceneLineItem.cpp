@@ -51,7 +51,7 @@ void SceneLineItem::log(const SceneLineItem& item) {
 SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
     if (!item) return nullptr;
 
-    print("Items were not null");
+    printf("Items were not null");
 
     auto* lineItem = reinterpret_cast<SceneLineItem*>(item);
 
@@ -63,7 +63,7 @@ SceneLineItem* SceneLineItem::tryCast(SceneItem* item) {
 
     if (!(lineItem->unk_x20 == 0x0 || (lineItem->unk_x20 == 0x2 && lineItem->unk_x21 == 0x2))) return nullptr;
     
-    print("second check passed");
+    printf("second check passed");
 
     // We could also check for correct vtable, but it would break until vtable is set
     // Consider doing this check if vtable_ptr != nullptr
