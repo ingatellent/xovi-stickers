@@ -198,7 +198,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setColorOnSceneIte
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
 		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
-            reColored.push_back(lineItem);
+            reColored.push_back(itemPtr);
             continue;
         }
 
@@ -218,7 +218,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setToolOnSceneItem
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
 		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
-            retooled.push_back(lineItem);
+            retooled.push_back(itemPtr);
             continue;
         }
 
@@ -237,7 +237,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::increaseThicknessO
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
 		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
-            resized.push_back(lineItem);
+            resized.push_back(itemPtr);
             continue;
         }
 
@@ -258,7 +258,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::decreaseThicknessO
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
 		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
-            resized.push_back(lineItem);
+            resized.push_back(itemPtr);
             continue;
         }
 
