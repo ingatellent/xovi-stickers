@@ -197,7 +197,10 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setColorOnSceneIte
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+            reColored.push_back(lineItem);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.color = colorEnum;
@@ -214,7 +217,10 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setToolOnSceneItem
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+            retooled.push_back(lineItem);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.tool = toolEnum;
@@ -230,7 +236,10 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::increaseThicknessO
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+            resized.push_back(lineItem);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
@@ -248,7 +257,10 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::decreaseThicknessO
 	for (auto& itemPtr : items) {
 		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
 		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+            resized.push_back(lineItem);
+            continue;
+        }
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		for (auto& pt : newLineItem->line.points) {
