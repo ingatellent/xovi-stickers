@@ -200,7 +200,7 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setColorOnSceneIte
             reColored.push_back(itemPtr);
             continue;
         }
-        lineItem->log();
+        //SceneLineItem::log(lineItem);
 
 		auto newLineItem = std::make_shared<SceneLineItem>(*lineItem);
 		newLineItem->line.color = colorEnum;
