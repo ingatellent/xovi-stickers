@@ -360,6 +360,7 @@ void StickerManager::saveSceneItemsAsSvg(
     for (const auto& itemPtr : items) {
         auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
         if (!lineItem) continue;
+		if (lineItem->vtable != SceneLineItem::vtable_ptr) continue;
 
         const Line& line = lineItem->line;
 
