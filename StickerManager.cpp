@@ -195,9 +195,8 @@ Q_INVOKABLE QList<std::shared_ptr<SceneItem>> StickerManager::setColorOnSceneIte
 {
 	QList<std::shared_ptr<SceneItem>> reColored;
 	for (auto& itemPtr : items) {
-		auto* lineItem = reinterpret_cast<SceneLineItem*>(itemPtr.get());
-		if (!lineItem) continue;
-		if (lineItem->vtable != SceneLineItem::vtable_ptr) {
+        auto* lineItem = SceneLineItem::tryCast(itemPtr.get());
+		if (!lineItem) {
             reColored.push_back(itemPtr);
             continue;
         }
