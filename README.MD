@@ -1,5 +1,7 @@
 # reMarkable stickers for xovi
 
+**Archived repository: xovi-stickers has been replaced by [xovi-scene-assistant](https://github.com/ingatellent/xovi-scene-assistant)**
+
 This is a xovi extension which adds the following functionality
 
 - save the clipboard to a file
